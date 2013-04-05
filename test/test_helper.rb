@@ -28,6 +28,9 @@ require 'cask'
 # look for casks in testcasks by default
 Cask.default_tap = 'phinze-testcasks'
 
+# silence some extraneous UI messages for tests
+ENV['QUIET_TESTS'] = '1'
+
 class TestHelper
   # helper for test casks to reference local files easily
   def self.local_binary(name)
@@ -45,6 +48,11 @@ class TestHelper
 
   def self.fake_response_for(*args)
     Cask::FakeFetcher.fake_response_for(*args)
+  end
+
+  def self.valid_alias?(candidate)
+    return false unless candidate.symlink?
+    candidate.readlink.exist?
   end
 end
 
